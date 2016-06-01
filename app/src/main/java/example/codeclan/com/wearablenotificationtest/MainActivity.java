@@ -19,9 +19,7 @@ import android.widget.EditText;
 //Handling Voice Notifications
 import android.support.v4.app.RemoteInput;
 import android.util.Log;
-
-
-
+import android.widget.TextView;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -54,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // Method to display our basic notification
-        displayBasicNotification(pendingIntent);
+        // displayBasicNotification(pendingIntent);
+        displayCustomNotification(pendingIntent);
 
     }
 
@@ -77,6 +76,44 @@ public class MainActivity extends AppCompatActivity {
 
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from((MainActivity.this));
         notificationManagerCompat.notify(Notification_ID, notification);
+
+    }
+
+    public void displayCustomNotification(final PendingIntent pendingIntent){
+
+        //get reference to our activity views
+        final Button mSendNotiofication = (Button) findViewById(R.id.sendNotificationButton);
+        final TextView mSendNotificationInput = (TextView) findViewById(R.id.customNotificationInput);
+
+        // Set our notification input hint message and
+        // update the text for our button
+
+        mSendNotificationInput.setHint(R.string.notification_message);
+        mSendNotiofication.setText(R.string.notification_button);
+
+        //set up send notification onclick
+        mSendNotiofication.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //get the text from teh input
+                String message = mSendNotificationInput.getText().toString();
+                //set up the notification action class method
+                NotificationCompat.Action action = new NotificationCompat.Action.Builder(R.mipmap.ic_launcher,
+                        getString(R.string.notification_title), pendingIntent).build();
+                // create teh notification
+                Notification notification = new NotificationCompat.Builder(MainActivity.this).
+                        setContentText(message).
+                        setContentTitle(getText(R.string.notification_title)).
+                        setSmallIcon(R.mipmap.ic_launcher).extend(new NotificationCompat.
+                        WearableExtender()).addAction(action).build();
+
+                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(MainActivity.this);
+                notificationManagerCompat.notify(Notification_ID, notification);
+
+            }
+        });
+
+
 
     }
 }
